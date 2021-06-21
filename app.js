@@ -41,6 +41,19 @@ passport.use(User.createStrategy());
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+const customerSchema = new mongoose.Schema({
+  email: String,
+  password: String
+});
+
+customerSchema.plugin(passportLocalMongoose);
+
+const Customer = new mongoose.model("Customer", customerSchema);
+
+passport.use(Customer.createStrategy());
+passport.serializeUser(Customer.serializeUser());
+passport.deserializeUser(Customer.deserializeUser());
+
 
 const driverSchema = new mongoose.Schema({
   firstName: String,
@@ -147,12 +160,19 @@ app.get("/userUpdate", function(req,res){
       })
     }
   })
-});
-
-app.get('/customer', function(req, res){
-  res.render("customer");
 })
 
+app.get('/customer', function(req, res){
+  res.render('customer')
+});
+
+app.get('/customerHome', function(req, res){
+  res.render('customerHome' )
+})
+
+app.get('/customerLogin', function(req, res){
+  res.render('customerLogin');
+})
 app.post('/register', function(req, res) {
   const userName = req.body.username;
   User.register({
@@ -328,6 +348,41 @@ app.post("/userupdate", function(req, res) {
     }
   })
 })
+
+app.post('/customer', function(req, res) {
+  const userName = req.body.username;
+  Customer.register({
+    username: req.body.username
+  }, req.body.password, function(err, user) {
+    if (err) {
+      console.log(err);
+      res.redirect("/customer");
+    } else {
+      passport.authenticate("local")(req, res, function() {
+        console.log("Successfully registered customer!");
+          var string = encodeURIComponent(userName);
+            res.redirect('/customerHome?user=' + string);
+      })
+    }
+  })
+});
+
+app.post('/customerLogin', function(req, res) {
+  const customer = new Customer({
+    username: req.body.username,
+    password: req.body.password
+  });
+  req.login(customer, function(err) {
+    if (err) {
+      console.log(err);
+    } else {
+      passport.authenticate("local")(req, res, function() {
+        res.redirect('customerHome');
+      })
+    }
+  })
+});
+
 
 app.listen(3000, function(req, res) {
   console.log("Server started on port 3000");
