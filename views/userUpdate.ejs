@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <form action="/userUpdate?user=<%=username%>" method="post">
+      <input type="text" name="fName" value="<%=info.firstName%>" />
+      <input type="text" name="lName" value="<%=info.lastName%>" />
+      <input type="text" name="username" value="<%=info.username%>"/>
+      <input type="email" name="email" value="<%=info.email%>" />
+      <input type="number" name="drivingID" value="<%=info.drivingID%>" />
+      <input type="number" name="aadharNumber" value="<%=info.aadharNumber%>" />
+      <input type="number" name="phoneNumber" value="<%=info.phoneNumber%>" />
+      <input type="text" name="carNumber" value="<%=info.carNumber%>" />
+      <input type="text" name="gender" value="<%=info.gender%>" />
+      <button type="submit">Update</button>
+    </form>
+  </body>
+</html>
